@@ -1,0 +1,29 @@
+.palleteGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  padding: 2px;
+  border-radius: 6px;
+  border: 1px solid #69696934;
+}
+
+.colorDiv {
+  display: flex;
+  flex-direction: column;
+}
+
+.colorDiv:hover{
+  background-color: #e0e0e0;
+}
+
+.text {
+  padding: 10px;
+  color: #303030;
+}
+
+@media (max-width: 800px) {
+  .palleteGrid {
+    grid-template-columns: repeat(5, 72px);
+  }
+}

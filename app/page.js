@@ -1,102 +1,130 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from './page.module.css'
+"use client";
 
-const inter = Inter({ subsets: ['latin'] })
+import Pallete from "./component/pallete";
+import styles from "../css/page.module.css";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+export const URL = "https://coolor-pallete-backend-fastapi.vercel.app/";
+
+// api call
+async function getPalletes(setLoading, setPallete) {
+  const res = await axios
+    .get(URL, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => {
+      setLoading(false);
+      setPallete(res.data);
+      return res.data;
+    })
+    .catch((err) => {
+      setLoading(false);
+      console.log(err);
+      return err;
+    });
+
+  return res;
+}
+
+async function createPallete(setLoading, palleteUrl, setPallete) {
+  var sub1 = palleteUrl.split("https://coolors.co/")[1];
+  var arr = sub1.split("-");
+  const res = await axios
+    .post(
+      `${URL}create`,
+      {
+        color1: arr[0],
+        color2: arr[1],
+        color3: arr[2],
+        color4: arr[3],
+        color5: arr[4],
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then(async (res) => {
+      await getPalletes(setLoading, setPallete);
+      setLoading(false);
+      return res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+      return err;
+    });
+
+  return res;
+}
 
 export default function Home() {
+  const [text, setText] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [pallete, setPallete] = useState();
+
+  useEffect(() => {
+    async function fetchAPI() {
+      await getPalletes(setLoading, setPallete);
+    }
+
+    fetchAPI();
+  }, []);
+
+  const addPallete = async (e) => {
+    e.preventDefault();
+
+    if (text.includes("https://coolors.co/")) {
+      setLoading(true);
+      const res = await createPallete(setLoading, text, setPallete);
+      setText("")
+    } else {
+      alert("Invalid url");
+    }
+  };
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
+    <>
+      {loading ? (
+        <section className={styles.loadingSec}>
+          <h3>
+            Loading ...
+          </h3>
+        </section>
+      ) : (
+        <main className={styles.main}>
+          <h1>Coolor pallete saver</h1>
+          <form className={styles.addDiv} onSubmit={(e) => addPallete(e)}>
+            <input
+              type="text"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Paste the coolors link"
+              className={styles.textField}
             />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+            <input type="submit" value="Add" className={styles.btn} />
+          </form>
+          <div className={styles.palletteGrp}>
+            {pallete !== undefined ? (
+              pallete.map((data, index) => (
+                <Pallete
+                  key={index}
+                  color1={data.color1}
+                  color2={data.color2}
+                  color3={data.color3}
+                  color4={data.color4}
+                  color5={data.color5}
+                />
+              ))
+            ) : (
+              <></>
+            )}
+          </div>
+        </main>
+      )}
+    </>
+  );
 }

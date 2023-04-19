@@ -1,0 +1,75 @@
+.main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  padding: 0px;
+}
+.palletteGrp {
+  max-width: 100%;
+  padding: 10px;
+  display: inline-grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  grid-row-gap: 30px;
+}
+.addDiv {
+  display: flex;
+  padding: 5px;
+  width: 100%;
+  gap: 10px;
+}
+
+.textField {
+  width: 100%;
+  border-radius: 5px;
+  padding: 10px 15px;
+  border: 1px solid #7c7c7c;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.5rem;
+  margin: 10px 0px;
+  transition: 100ms ease-in;
+}
+
+.btn {
+  margin: 10px 0px;
+  padding: 0px 25px;
+}
+
+.btn {
+  color: #fff;
+  background: #009fb7;
+  border-radius: 3px;
+  border: none;
+  font-size: 1rem;
+  transition: 200ms ease-in;
+}
+
+.btn:hover {
+  transition: 300ms ease-out;
+  background: #fed766;
+  color: #303030;
+}
+
+.loadingSec {
+  position: absolute;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+@media (max-width: 800px) {
+  .palletteGrp {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .palletteGrp{
+    grid-template-columns: 1fr;
+  }
+}
