@@ -29,12 +29,12 @@ async function getPalletes(setLoading, setPallete) {
   return res;
 }
 
-async function createPallete(setLoading, palleteUrl, setPallete) {
+async function createPallete(setLoading, palleteUrl, setPallete,pallete) {
   var sub1 = palleteUrl.split("https://coolors.co/")[1];
   var arr = sub1.split("-");
   const res = await axios
     .post(
-      `${URL}create`,
+      `${URL}create/`,
       {
         color1: arr[0],
         color2: arr[1],
@@ -49,7 +49,8 @@ async function createPallete(setLoading, palleteUrl, setPallete) {
       }
     )
     .then(async (res) => {
-      await getPalletes(setLoading, setPallete);
+      console.log(res.data)
+      setPallete([res.data,...pallete]);
       setLoading(false);
       return res.data;
     })
@@ -79,7 +80,7 @@ export default function Home() {
 
     if (text.includes("https://coolors.co/")) {
       setLoading(true);
-      const res = await createPallete(setLoading, text, setPallete);
+      const res = await createPallete(setLoading, text, setPallete,pallete);
       setText("")
     } else {
       alert("Invalid url");
