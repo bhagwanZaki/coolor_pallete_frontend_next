@@ -97,7 +97,6 @@ export default function Home() {
         </section>
       ) : (
         <main className={styles.main}>
-          <h1>Coolor pallete saver</h1>
           <form className={styles.addDiv} onSubmit={(e) => addPallete(e)}>
             <input
               type="text"

@@ -23,3 +23,7 @@ body::-webkit-scrollbar-track {
 body::-webkit-scrollbar-thumb {
   background: #4285f4;
 }
+
+.logo{
+  padding: 20px 40px;
+}
