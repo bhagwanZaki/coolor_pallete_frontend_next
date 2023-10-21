@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styles from "../css/page.module.css";
 import { createPallete, getPalletesFromAction } from "@/action/colorapi";
 
-import Pallete from "./component/pallete";
+import Pallete from "./component/Pallete";
 import RippleLoader from "./component/RippleLoader";
 import EllipseLoader from "./component/EllipseLoader";
 
