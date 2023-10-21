@@ -10,7 +10,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <h1 className="logo">Crome</h1>
+        <h1 className="logo">Palletes</h1>
         <ReduxProvider>{children}</ReduxProvider>
       </body>
     </html>
