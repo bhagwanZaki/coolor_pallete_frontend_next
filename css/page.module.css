@@ -25,25 +25,21 @@
   width: 100%;
   border-radius: 5px;
   padding: 10px 15px;
-  border: 1px solid #7c7c7c;
+  border: 1px solid #e6ebf1;
   font-family: "Montserrat", sans-serif;
   font-size: 1.5rem;
-  margin: 10px 0px;
   transition: 100ms ease-in;
 }
 
 .btn {
-  margin: 10px 0px;
   padding: 0px 25px;
-}
-
-.btn {
   color: #fff;
   background: #009fb7;
   border-radius: 3px;
   border: none;
   font-size: 1rem;
   transition: 200ms ease-in;
+  font-weight: 700;
 }
 
 .btn:hover {
@@ -52,14 +48,38 @@
   color: #303030;
 }
 
+.disableBtn {
+  cursor: not-allowed;
+  background: #009fb7;
+  border-radius: 3px;
+  border: none;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .loadingSec {
   position: absolute;
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: calc(100vh - 60px);
+}
+
+.loadMore {
+  padding: 10px 35px;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  width: max-content;
+  align-self: center;
+  border: none;
+  background: #ededed;
+  color: #444;
+  margin-bottom: 20px;
 }
 
 @media (max-width: 800px) {
@@ -69,7 +89,7 @@
 }
 
 @media (max-width: 500px) {
-  .palletteGrp{
+  .palletteGrp {
     grid-template-columns: 1fr;
   }
 }

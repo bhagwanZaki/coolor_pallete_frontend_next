@@ -1,99 +1,58 @@
 "use client";
 
-import Pallete from "./component/pallete";
-import styles from "../css/page.module.css";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-export const URL = "https://coolor-pallete-backend-fastapi.vercel.app/";
+import styles from "../css/page.module.css";
+import { createPallete, getPalletesFromAction } from "@/action/colorapi";
 
-// api call
-async function getPalletes(setLoading, setPallete) {
-  const res = await axios
-    .get(URL, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-    .then((res) => {
-      setLoading(false);
-      setPallete(res.data);
-      return res.data;
-    })
-    .catch((err) => {
-      setLoading(false);
-      console.log(err);
-      return err;
-    });
-
-  return res;
-}
-
-async function createPallete(setLoading, palleteUrl, setPallete,pallete) {
-  var sub1 = palleteUrl.split("https://coolors.co/")[1];
-  var arr = sub1.split("-");
-  const res = await axios
-    .post(
-      `${URL}create/`,
-      {
-        color1: arr[0],
-        color2: arr[1],
-        color3: arr[2],
-        color4: arr[3],
-        color5: arr[4],
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
-    .then(async (res) => {
-      console.log(res.data)
-      setPallete([res.data,...pallete]);
-      setLoading(false);
-      return res.data;
-    })
-    .catch((err) => {
-      console.log(err);
-      return err;
-    });
-
-  return res;
-}
+import Pallete from "./component/pallete";
+import RippleLoader from "./component/RippleLoader";
+import EllipseLoader from "./component/EllipseLoader";
 
 export default function Home() {
   const [text, setText] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [pallete, setPallete] = useState();
+  const [page, setPage] = useState(1);
+
+  // Loading state
+  const [mainLoading, setMainLoading] = useState(true);
+  const [addLoading, setAddLoading] = useState(false);
+  const [moreloading, setMoreLoading] = useState(false);
+
+  const dispatch = useDispatch();
+  const palleteData = useSelector((state) => state.colorDataReducer);
 
   useEffect(() => {
     async function fetchAPI() {
-      await getPalletes(setLoading, setPallete);
+      await getPalletesFromAction(setMainLoading, dispatch, page);
     }
-
     fetchAPI();
   }, []);
 
+  const loadMoreCollor = async () => {
+    setMoreLoading(true);
+    await getPalletesFromAction(setMoreLoading, dispatch, page + 1);
+    var temp = page + 1;
+    setPage(temp);
+  };
+
   const addPallete = async (e) => {
     e.preventDefault();
-
     if (text.includes("https://coolors.co/")) {
-      setLoading(true);
-      const res = await createPallete(setLoading, text, setPallete,pallete);
-      setText("")
+      setAddLoading(true);
+      await createPallete(text, dispatch);
+      setAddLoading(false);
     } else {
       alert("Invalid url");
     }
+    setText("");
   };
 
   return (
     <>
-      {loading ? (
+      {mainLoading ? (
         <section className={styles.loadingSec}>
-          <h3>
-            Loading ...
-          </h3>
+          <RippleLoader />
         </section>
       ) : (
         <main className={styles.main}>
@@ -105,11 +64,17 @@ export default function Home() {
               placeholder="Paste the coolors link"
               className={styles.textField}
             />
-            <input type="submit" value="Add" className={styles.btn} />
+            {addLoading ? (
+              <button className={styles.disableBtn} disabled>
+                <EllipseLoader />
+              </button>
+            ) : (
+              <input type="submit" value="Add" className={styles.btn} />
+            )}
           </form>
           <div className={styles.palletteGrp}>
-            {pallete !== undefined ? (
-              pallete.map((data, index) => (
+            {palleteData.data !== undefined ? (
+              palleteData.data.map((data, index) => (
                 <Pallete
                   key={index}
                   color1={data.color1}
@@ -123,6 +88,18 @@ export default function Home() {
               <></>
             )}
           </div>
+          {!palleteData.isLast && !moreloading ? (
+            <button
+              className={styles.loadMore}
+              onClick={() => loadMoreCollor()}
+            >
+              Load more
+            </button>
+          ) : (
+            <></>
+          )}
+
+          {moreloading ? <RippleLoader /> : <></>}
         </main>
       )}
     </>
